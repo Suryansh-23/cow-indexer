@@ -2135,6 +2135,8 @@ name = "core"
 version = "0.1.0"
 dependencies = [
  "eyre",
+ "reth-exex",
+ "reth-primitives",
  "tokio",
 ]
 
@@ -2946,6 +2948,7 @@ dependencies = [
 name = "exex-node"
 version = "0.1.0"
 dependencies = [
+ "clap",
  "core",
  "eyre",
  "futures-util",
@@ -7794,6 +7797,7 @@ version = "1.6.0"
 source = "git+https://github.com/paradigmxyz/reth.git#de24793b19f5c28e6871c57e38b23811f347fba2"
 dependencies = [
  "alloy-consensus",
+ "c-kzg",
  "once_cell",
  "reth-ethereum-forks",
  "reth-ethereum-primitives",

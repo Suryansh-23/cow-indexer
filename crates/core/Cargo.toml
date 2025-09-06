@@ -6,3 +6,5 @@ edition = "2024"
 [dependencies]
 eyre = { workspace = true }
 tokio = { workspace = true }
+reth-exex ={ workspace = true }
+reth-primitives = { workspace = true }

@@ -1,27 +1,20 @@
-use std::marker::PhantomData;
-use std::sync::LazyLock;
-
-use include_dir::{Dir, include_dir};
-use rusqlite::Connection;
-use rusqlite_migration::Migrations;
-
+// Data-Access-Object
 use crate::SqliteStore;
+use rusqlite::Connection;
+use std::{marker::PhantomData, path::PathBuf};
 
 pub struct Read;
 pub struct Write;
 
 pub trait R {
-    fn new(db_path: Option<&str>) -> rusqlite::Result<SqliteStore<Read>> {
-        let db_path = match db_path {
-            Some(path) => path,
-            None => "cow.db",
-        };
-
-        let conn =
-            Connection::open_with_flags(db_path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)?;
+    fn new(db_path: PathBuf) -> rusqlite::Result<SqliteStore<Read>> {
+        let conn = Connection::open_with_flags(
+            db_path.clone(),
+            rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY,
+        )?;
 
         Ok(SqliteStore {
-            db_path: db_path.into(),
+            db_path,
             conn,
             _mode: PhantomData,
         })

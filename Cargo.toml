@@ -13,7 +13,9 @@ resolver = "2"
 reth = { git = "https://github.com/paradigmxyz/reth.git" }
 reth-exex = { git = "https://github.com/paradigmxyz/reth.git" }
 reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth.git" }
+reth-primitives = { git = "https://github.com/paradigmxyz/reth.git" }
 reth-tracing = { git = "https://github.com/paradigmxyz/reth.git" }
+clap = { version = "4", features = ["derive"] }
 
 # ABI + primitives
 alloy="1.0.30"

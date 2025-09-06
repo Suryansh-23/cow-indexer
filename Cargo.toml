@@ -1,6 +1,6 @@
 [workspace]
 members = [
-  "crates/chain-core",
+  "crates/core",
   "crates/cow-abi",
   "crates/storage-sqlite",
   "crates/pipeline",
@@ -16,8 +16,7 @@ reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth.git" }
 reth-tracing = { git = "https://github.com/paradigmxyz/reth.git" }
 
 # ABI + primitives
-alloy-sol-types = "0.8"
-alloy-sol-macro = "0.8"
+alloy="1.0.30"
 
 # infra
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
@@ -27,9 +26,9 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # storage
-rusqlite = { version = "0.32", features = ["bundled", "array"] }
+rusqlite = { version = "0.37.0", features = ["bundled", "array"] }
 
 # http (optional api)
-axum = "0.7"
+axum = "0.8.4"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

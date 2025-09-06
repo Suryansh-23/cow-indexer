@@ -7,4 +7,4 @@ edition = "2024"
 eyre = { workspace = true }
 tokio = { workspace = true }
 futures-util = { workspace = true }
-chain-core = { path = "../chain-core" }
+core = { path = "../core" }

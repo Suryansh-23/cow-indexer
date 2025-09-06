@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+include_dir = "0.7.4"
+rusqlite_migration = { version="2.3.0", features=["from-directory"] }
 rusqlite = { workspace = true }
+reth-tracing = { workspace = true }
 eyre = { workspace = true }
-chain-core = { path = "../chain-core" }
+core = { path = "../core" }

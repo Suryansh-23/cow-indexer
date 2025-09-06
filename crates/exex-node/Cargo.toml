@@ -17,4 +17,4 @@ reth-tracing = { workspace = true }
 
 pipeline = { path = "../pipeline" }
 storage-sqlite = { path = "../storage-sqlite" }
-chain-core = { path = "../chain-core" }
+core = { path = "../core" }

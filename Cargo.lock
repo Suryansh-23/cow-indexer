@@ -2956,6 +2956,7 @@ dependencies = [
  "reth-tracing",
  "storage-sqlite",
  "tokio",
+ "tokio-util",
  "tracing",
  "tracing-subscriber 0.3.20",
 ]

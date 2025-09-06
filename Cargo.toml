@@ -20,6 +20,7 @@ alloy="1.0.30"
 
 # infra
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+tokio-util = "0.7.16"
 futures-util = "0.3"
 eyre = "0.6"
 tracing = "0.1"

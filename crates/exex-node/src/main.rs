@@ -1,4 +1,10 @@
-use futures_util::TryStreamExt;
+use std::{
+    future::Future,
+    pin::Pin,
+    task::{Context, Poll, ready},
+};
+
+use futures_util::{FutureExt, TryStreamExt};
 use reth::{
     api::{FullNodeComponents, NodeTypes},
     primitives::EthPrimitives,
@@ -7,39 +13,52 @@ use reth_exex::{ExExContext, ExExEvent, ExExNotification};
 use reth_node_ethereum::EthereumNode;
 use reth_tracing::tracing::info;
 
-async fn indexer_exex<Node: FullNodeComponents<Types: NodeTypes<Primitives = EthPrimitives>>>(
-    mut ctx: ExExContext<Node>,
-) -> eyre::Result<()> {
-    while let Some(notification) = ctx.notifications.try_next().await? {
-        match &notification {
-            ExExNotification::ChainCommitted { new } => {
-                info!(committed_chain = ?new.range(), "Received commit");
-            }
-            ExExNotification::ChainReorged { old, new } => {
-                info!(from_chain = ?old.range(), to_chain = ?new.range(), "Received reorg");
-            }
-            ExExNotification::ChainReverted { old } => {
-                info!(reverted_chain = ?old.range(), "Received revert");
-            }
-        };
+struct ExExNode<Node: FullNodeComponents> {
+    ctx: ExExContext<Node>,
+}
 
-        if let Some(committed_chain) = notification.committed_chain() {
-            ctx.events
-                .send(ExExEvent::FinishedHeight(committed_chain.tip().num_hash()))?;
+impl<Node: FullNodeComponents<Types: NodeTypes<Primitives = EthPrimitives>>> Future
+    for ExExNode<Node>
+{
+    type Output = eyre::Result<()>;
+
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let this = self.get_mut();
+
+        while let Some(notification) = ready!(this.ctx.notifications.try_next().poll_unpin(cx))? {
+            match &notification {
+                ExExNotification::ChainCommitted { new } => {
+                    info!(committed_chain = ?new.range(), "Received commit");
+                }
+                ExExNotification::ChainReorged { old, new } => {
+                    info!(from_chain = ?old.range(), to_chain = ?new.range(), "Received reorg");
+                }
+                ExExNotification::ChainReverted { old } => {
+                    info!(reverted_chain = ?old.range(), "Received revert");
+                }
+            };
+
+            if let Some(committed_chain) = notification.committed_chain() {
+                this.ctx
+                    .events
+                    .send(ExExEvent::FinishedHeight(committed_chain.tip().num_hash()))?;
+            }
         }
-    }
 
-    Ok(())
+        Poll::Ready(Ok(()))
+    }
 }
 
 fn main() -> eyre::Result<()> {
     reth::cli::Cli::parse_args().run(async move |builder, _| {
         let handle = builder
             .node(EthereumNode::default())
-            .install_exex("cow-indexer", async move |ctx| Ok(indexer_exex(ctx)))
+            .install_exex("cow-indexer", async move |ctx| Ok(ExExNode { ctx }))
             .launch()
             .await?;
 
         handle.wait_for_node_exit().await
     })
 }
+
+pub mod shutdown;

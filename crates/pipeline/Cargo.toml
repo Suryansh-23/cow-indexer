@@ -1,0 +1,10 @@
+[package]
+name = "pipeline"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+eyre = { workspace = true }
+tokio = { workspace = true }
+futures-util = { workspace = true }
+chain-core = { path = "../chain-core" }
